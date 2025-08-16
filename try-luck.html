@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>เว็บวัดดวง 5 ข้อ</title>
+<style>
+  body { font-family: sans-serif; background: #f0f4f8; text-align: center; margin: 0; padding: 20px; }
+  .container { max-width: 500px; margin: 40px auto; background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);  }
+  h1 { margin-bottom: 20px; }
+  button { display: block; margin: 10px auto; padding: 10px 20px; border: none; border-radius: 8px; background: #ff9800; color: #fff; font-size: 16px; cursor: pointer; }
+  button:hover { background: #e68900; }
+  .question { margin: 20px 0; font-weight: bold;  align-items: center; }
+  .options button { background: #03a9f4; margin: 5px; width: 80%; }
+  .options button:hover { background: #0288d1; }
+  .result { font-size: 18px; margin-top: 20px; }
+  .text { font-size: 16px; color: #555; align-items :center;}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🔮 วัดดวง 5 ข้อ 🔮</h1>
+  <div id="quiz"></div>
+</div>
+<script>
+const questions = [
+  { q: "1. เลขที่คุณชอบที่สุดคืออะไร?", options: [
+      {text:"1", score:2},{text:"2", score:4},{text:"3", score:6},{text:"4", score:8},{text:"5", score:10},
+      {text:"6", score:2},{text:"7", score:4},{text:"8", score:6},{text:"9", score:8},{text:"0", score:10}
+    ]},
+  { q: "2. สีที่คุณรู้สึกว่าเป็นตัวคุณ?", options: [
+      {text:"แดง", score:10},{text:"น้ำเงิน", score:8},{text:"เขียว", score:6},{text:"เหลือง", score:4},{text:"ม่วง", score:2}
+    ]},
+  { q: "3. ถ้าวันนี้ได้ไปเที่ยวฟรี คุณจะเลือกไป?", options: [
+      {text:"ภูเขา", score:10},{text:"ทะเล", score:8},{text:"เมืองใหญ่", score:6}
+    ]},
+  { q: "4. เวลามีปัญหา คุณมักใช้?", options: [
+      {text:"เหตุผล", score:10},{text:"ความรู้สึก", score:6},{text:"ทั้งสองอย่าง", score:8}
+    ]},
+  { q: "5. คุณชอบตื่นเช้า หรืออยู่ดึก?", options: [
+      {text:"เช้า", score:10},{text:"ดึก", score:6}
+    ]}
+];
+
+let current = 0;
+let totalScore = 0;
+const quizEl = document.getElementById('quiz');
+
+function showQuestion(){
+  const q = questions[current];
+  quizEl.innerHTML = `<div class='question'>${q.q}</div><div class='options'>` + 
+    q.options.map((opt,i)=>`<button onclick='selectAnswer(${opt.score})'>${opt.text}</button>`).join('') +
+    `</div>`;
+}
+
+function selectAnswer(score){
+  totalScore += score;
+  current++;
+  if(current < questions.length){
+    showQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult(){
+  const maxScore = questions.reduce((sum,q)=>sum+Math.max(...q.options.map(o=>o.score)),0);
+  const percent = Math.round(totalScore / maxScore * 100);
+  let message = '';
+  if(percent <= 40) message='ดวงไม่ค่อยดี ระวังหน่อยนะ!';
+  else if(percent <=70) message='ดวงกลาง ๆ พอไปได้';
+  else message='ดวงดีมาก! ทำอะไรก็สำเร็จ';
+
+  quizEl.innerHTML = `<div class='result'>คุณมีดวง ${percent}%<br>${message}</div><button onclick='restart()'>ทำอีกครั้ง</button>`;
+}
+
+function restart(){
+  current=0; totalScore=0; showQuestion();
+}
+
+showQuestion();
+</script>
+</body>
+</html>
